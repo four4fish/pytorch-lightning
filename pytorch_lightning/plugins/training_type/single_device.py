@@ -15,6 +15,8 @@ from typing import Any, Optional, Union
 
 import torch
 
+from pytorch_lightning.plugins.collective.collective_plugin import Collective
+from pytorch_lightning.plugins.collective.single_device_collective import SingleDeviceCollective
 from pytorch_lightning.plugins.io.checkpoint_plugin import CheckpointIO
 from pytorch_lightning.plugins.training_type.training_type_plugin import TrainingTypePlugin
 from pytorch_lightning.utilities import _XLA_AVAILABLE
@@ -27,8 +29,9 @@ class SingleDevicePlugin(TrainingTypePlugin):
         self,
         device: torch.device,
         checkpoint_io: Optional[CheckpointIO] = None,
+        collective: Optional[Collective] = None,
     ):
-        super().__init__(checkpoint_io)
+        super().__init__(checkpoint_io=checkpoint_io, collective=collective or SingleDeviceCollective())
         self.device: torch.device = device
         self.global_rank = 0
         self.local_rank = 0
